@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+//protoc --go_out=plugins=grpc:. search.proto
+//protoc --grpc_out=. --plugin=protoc-gen-pb=`which grpc_cpp_plugin` search.proto
+//protoc --cpp_out=. search.proto
+package pb;
+
+service Searcher {
+    rpc Search (SearchRequest) returns (SearchReply) {}
+    rpc Search2 (stream SearchRequest) returns (stream SearchReply) {}
+}
+
+message SearchRequest {
+    string name = 1;
+}
+
+message SearchReply {
+    string name = 1;
+}
+

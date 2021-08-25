@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  etcd:
+    command: --listen-client-urls http://0.0.0.0:2379 --advertise-client-urls http://0.0.0.0:2379
+    image: appcelerator/etcd:latest
+    ports:
+      - "2379:2379"
+    networks:
+      - overlay
+  server:
+    command: ./service --registry=etcd --registry_address=etcd:2379 --register_interval=5 --register_ttl=10
+    build:
+      dockerfile: ./service.Dockerfile
+      context: .
+    image: wida/micro-service:v1.0
+    networks:
+      - overlay
+    depends_on:
+      - etcd
+    deploy:
+      mode: replicated
+      replicas: 2
+  web:
+    command: ./web --registry=etcd --registry_address=etcd:2379 --register_interval=5 --register_ttl=10
+    image: wida/micro-web:v1.0
+    build:
+      dockerfile: ./web.Dockerfile
+      context: .
+    networks:
+      - overlay
+    depends_on:
+      - etcd
+    ports:
+      - "8009:8009"
+networks:
+  overlay:

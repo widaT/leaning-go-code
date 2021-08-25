@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option go_package = "../proto";
+
+service Say {
+	rpc Hello(Request) returns (SayResponse) {}
+}
+
+message Request {
+	string name = 1;
+}
+
+message Pair {
+    int32 key = 1;
+    string values = 2;
+}
+
+message SayResponse {
+    string msg = 1;
+    // 数组
+    repeated string values = 2;
+    // map
+    map<string, Pair> header = 3;
+    RespType type = 4;
+}
+
+enum RespType {
+    NONE = 0;
+    ASCEND = 1;
+    DESCEND = 2;
+}
